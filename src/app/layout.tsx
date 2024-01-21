@@ -1,6 +1,8 @@
-import type { Metadata } from "next";
+import clsx from "clsx";
 import { Inter } from "next/font/google";
 import "./globals.css";
+import { ThemeProvider } from "@/theme/ThemeProvider";
+import { Header } from "@/features/layout/Header";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -15,8 +17,15 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
-      <body>{children}</body>
+    <html lang="en" className="h-full">
+      <body className={clsx(inter.className, "bg-background h-full")}>
+        <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+          <div className="flex flex-col h-full">
+            <Header />
+            <div className="flex-1 py-12">{children}</div>
+          </div>
+        </ThemeProvider>
+      </body>
     </html>
   );
 }
