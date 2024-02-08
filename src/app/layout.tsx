@@ -1,8 +1,8 @@
+import { Header } from "@/features/layout/Header";
+import { ThemeProvider } from "@/theme/ThemeProvider";
 import clsx from "clsx";
 import { Inter } from "next/font/google";
 import "./globals.css";
-import { ThemeProvider } from "@/theme/ThemeProvider";
-import { Header } from "@/features/layout/Header";
 
 const inter = Inter({ subsets: ["latin"] });
 

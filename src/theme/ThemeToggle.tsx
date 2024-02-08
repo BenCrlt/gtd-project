@@ -1,16 +1,29 @@
 "use client";
-import { useTheme } from "next-themes";
-import React from "react";
-import { Moon, SunMedium } from "lucide-react";
+
 import { Switch } from "@/components/ui/switch";
+import { Moon, SunMedium } from "lucide-react";
+import { useTheme } from "next-themes";
+import { useState } from "react";
 
 export const ThemeToggle = () => {
+  const [themeSelected, setThemeSelected] = useState(
+    localStorage.getItem("theme") || "light"
+  );
   const { setTheme } = useTheme();
+
+  const onCheckedChange = () => {
+    const newTheme = themeSelected === "dark" ? "light" : "dark";
+    setThemeSelected(newTheme);
+    setTheme(newTheme);
+    localStorage.setItem("theme", newTheme);
+  };
+
   return (
     <div className="flex gap-2">
       <Moon />
       <Switch
-        onCheckedChange={(checked) => setTheme(checked ? "light" : "dark")}
+        checked={themeSelected === "light"}
+        onCheckedChange={onCheckedChange}
       />
       <SunMedium />
     </div>
