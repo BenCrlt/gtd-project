@@ -1,7 +1,7 @@
 "use client";
 import { ThemeToggle } from "@/theme/ThemeToggle";
-import React from "react";
 import { CheckCircle } from "lucide-react";
+import { LoginButton } from "./auth/LoginButton";
 
 export const Header = () => {
   return (
@@ -12,7 +12,10 @@ export const Header = () => {
           <CheckCircle />
           <h2 className="text-2xl font-bold">ne!</h2>
         </div>
-        <ThemeToggle />
+        <div className="flex items-center gap-9">
+          <ThemeToggle />
+          <LoginButton />
+        </div>
       </div>
     </header>
   );

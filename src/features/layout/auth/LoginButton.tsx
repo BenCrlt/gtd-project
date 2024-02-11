@@ -1,0 +1,13 @@
+"use client";
+
+import { Button } from "@/components/ui/button";
+import { LogIn } from "lucide-react";
+import { signIn } from "next-auth/react";
+
+export const LoginButton = () => {
+  return (
+    <Button onClick={() => signIn()}>
+      <LogIn />
+    </Button>
+  );
+};

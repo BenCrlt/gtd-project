@@ -1,11 +1,13 @@
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+"use client";
+
+import { useSession } from "next-auth/react";
 
 export default function Home() {
-  return (
-    <div className="m-4">
-      <Button>TEST</Button>
-      <Input />
-    </div>
-  );
+  const { data: session, status } = useSession();
+
+  if (status === "authenticated") {
+    return <p>Signed in as {JSON.stringify(session.user)}</p>;
+  }
+
+  return <p>Sign in</p>;
 }
