@@ -3,12 +3,15 @@
 import { Switch } from "@/components/ui/switch";
 import { Moon, SunMedium } from "lucide-react";
 import { useTheme } from "next-themes";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 export const ThemeToggle = () => {
-  const [themeSelected, setThemeSelected] = useState(
-    localStorage.getItem("theme") || "light"
-  );
+  const [themeSelected, setThemeSelected] = useState("light");
+
+  useEffect(() => {
+    setThemeSelected(localStorage.getItem("theme") || "light");
+  }, []);
+
   const { setTheme } = useTheme();
 
   const onCheckedChange = () => {

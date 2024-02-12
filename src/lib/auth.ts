@@ -12,9 +12,30 @@ export const authOptions: AuthOptions = {
       clientSecret: env.GITHUB_SECRET,
     }),
   ],
-  callbacks: {
-    session: ({ session, user }) => ({ ...session, id: user.id }),
+  session: {
+    strategy: "jwt",
   },
+  callbacks: {
+    jwt({ token, account, profile }: any) {
+      if (account) {
+        token.accessToken = account.access_token;
+        token.id = profile.id;
+      }
+      return token;
+    },
+    session({ session, token }: any) {
+      session.accessToken = token.accessToken;
+      session.id = token.sub;
+      return session;
+    },
+    redirect({ baseUrl }) {
+      return `${baseUrl}/home`;
+    },
+  },
+  pages: {
+    signIn: "/login",
+  },
+  secret: env.NEXTAUTH_SECRET,
 };
 
 export const getAuthSession = async () => getServerSession();
