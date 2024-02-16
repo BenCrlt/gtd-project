@@ -67,6 +67,14 @@ enum Priority {
   HIGH
 }
 
+enum Area {
+  WORK
+  PERSONAL
+  HOBBIES
+  HEALTH
+  LEARNING
+}
+
 model Task {
   id            String    @id @default(cuid())
   name          String
@@ -77,19 +85,11 @@ model Task {
   priority      Priority
   user          User      @relation(fields: [userId], references: [id])
   userId        String
-  area          Area?     @relation(fields: [areaId], references: [id])
-  areaId        String?
+  area          Area?
   project       Project?  @relation(fields: [projectId], references: [id])
   projectId     String?
   createdAt     DateTime  @default(now())
   deletedAt     DateTime
-}
-
-model Area {
-  id            String    @id @default(cuid())
-  name          String
-  tasks         Task[]
-  projects      Project[]
 }
 
 model Project {
@@ -100,8 +100,7 @@ model Project {
   endDate       DateTime?
   user          User      @relation(fields: [userId], references: [id])
   userId        String
-  area          Area?      @relation(fields: [areaId], references: [id])
-  areaId        String?
+  area          Area?
   tasks         Task[]
   createdAt     DateTime   @default(now())
   deletedAt     DateTime

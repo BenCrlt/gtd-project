@@ -1,5 +1,6 @@
+import TasksView from "@/features/task/TasksView";
 import { getAuthSession } from "@/lib/auth";
-import { prisma } from "@/lib/prisma";
+import { getTasksInRange } from "@/resolvers/task/query";
 import { endOfDay, startOfDay } from "date-fns";
 
 export default async function Home() {
@@ -9,32 +10,14 @@ export default async function Home() {
     return <></>;
   }
 
-  const dailyTasks = await prisma.task.findMany({
-    where: {
-      userId: session.user.id,
-      deletedAt: undefined,
-      OR: [
-        {
-          startDate: {
-            gte: startOfDay(new Date()),
-            lte: endOfDay(new Date()),
-          },
-        },
-        {
-          endDate: {
-            gte: startOfDay(new Date()),
-            lte: endOfDay(new Date()),
-          },
-        },
-      ],
-    },
+  const dailyTasks = await getTasksInRange(session.user.id, {
+    start: startOfDay(new Date()),
+    end: endOfDay(new Date()),
   });
 
   return (
-    <div>
-      {dailyTasks.map((task) => (
-        <h1 key={task.id}>{task.name}</h1>
-      ))}
+    <div className="flex justify-center w-full">
+      <TasksView tasks={dailyTasks} date={new Date()} />
     </div>
   );
 }

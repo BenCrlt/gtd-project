@@ -1,7 +1,7 @@
 import clsx from "clsx";
 import { PropsWithChildren } from "react";
 
-type TypographyVariant = "h1" | "p" | "small";
+type TypographyVariant = "h1" | "h2" | "p" | "small";
 
 type TypographyProps = {
   variant?: TypographyVariant;
@@ -36,6 +36,17 @@ export default function Typography({
         <small className={clsx("text-sm font-medium leading-none", className)}>
           {children}
         </small>
+      );
+    case "h2":
+      return (
+        <h2
+          className={clsx(
+            "scroll-m-20 text-2xl font-extrabold tracking-tight lg:text-2xl",
+            className
+          )}
+        >
+          {children}
+        </h2>
       );
     default:
       throw Error("NO VARIANT");

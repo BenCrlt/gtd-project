@@ -1,5 +1,11 @@
 import { format } from "date-fns";
 
-const DEFAULT_FORMAT = "YYYY-MM-DD";
+export type DateRange = {
+  start: Date;
+  end: Date;
+};
 
-export const formatDate = (date: Date) => format(date, DEFAULT_FORMAT);
+const DEFAULT_FORMAT = "yyyy-MM-dd";
+
+export const formatDate = (date: Date, dateFormat?: string) =>
+  format(date, dateFormat ?? DEFAULT_FORMAT);
