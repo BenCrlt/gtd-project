@@ -1,3 +1,4 @@
+import { TimePicker } from "@/components/ui/time-picker/index";
 import TasksView from "@/features/task/TasksView";
 import { getAuthSession } from "@/lib/auth";
 import { getTasksInRange } from "@/resolvers/task/query";
@@ -16,8 +17,11 @@ export default async function Home() {
   });
 
   return (
-    <div className="flex justify-center w-full">
-      <TasksView tasks={dailyTasks} date={new Date()} />
+    <div>
+      <div className="flex justify-around w-full">
+        <TasksView tasks={dailyTasks} date={new Date()} />
+        <TimePicker />
+      </div>
     </div>
   );
 }
