@@ -2,17 +2,17 @@
 
 import { PopoverClose } from "@radix-ui/react-popover";
 import { useMemo, useState } from "react";
-import { Button } from "../button";
 import { Input } from "../input";
 import { Popover, PopoverContent, PopoverTrigger } from "../popover";
 import Typography from "../typography";
 import { TimeScrollArea } from "./time-scroll-area";
 
 export type TimePickerProps = {
-  initDate?: Date;
+  initDate: Date | undefined;
+  onConfirm: (dateToSave: Date) => void;
 };
 
-export const TimePicker = ({ initDate }: TimePickerProps) => {
+export const TimePicker = ({ initDate, onConfirm }: TimePickerProps) => {
   const [hours, setHours] = useState(initDate ? initDate.getHours() : 12);
   const [minutes, setMinutes] = useState(initDate ? initDate.getMinutes() : 0);
 
@@ -32,32 +32,45 @@ export const TimePicker = ({ initDate }: TimePickerProps) => {
     [hours, minutes]
   );
 
+  const onConfirmTimeSelection = () => {
+    const dateToSave = initDate ?? new Date();
+    dateToSave.setHours(hours);
+    dateToSave.setMinutes(minutes);
+    onConfirm(dateToSave);
+  };
+
+  const onCancelTimeSelection = () => {
+    setHours(initDate ? initDate.getHours() : 12);
+    setMinutes(initDate ? initDate.getMinutes() : 0);
+  };
+
   return (
     <div>
       <Popover modal={true}>
         <PopoverTrigger asChild>
           <Input value={valueToDisplay} />
         </PopoverTrigger>
-        <PopoverContent className="p-0 w-auto">
+        <PopoverContent
+          className="p-0 w-auto"
+          onPointerDownOutside={onCancelTimeSelection}
+        >
           <div className="flex gap-2 h-40 items-center justify-center px-10 ">
             <TimeScrollArea
               selectorValues={hoursSelectorValues}
               setValue={setHours}
             />
-            <Typography variant="h2">:</Typography>
+            <div>
+              <Typography variant="h2">:</Typography>
+            </div>
             <TimeScrollArea
               selectorValues={minutesSelectorValues}
               setValue={setMinutes}
             />
           </div>
-          <div className="flex justify-between items-center border p-1">
-            <PopoverClose>
-              <Button className="opacity-80" variant="ghost">
-                Annuler
-              </Button>
-            </PopoverClose>
-            <PopoverClose>
-              <Button variant="ghost">Confirmer</Button>
+          <div className="flex justify-between items-center border h-10 p-2">
+            <PopoverClose onClick={onCancelTimeSelection}>Annuler</PopoverClose>
+            <PopoverClose onClick={onConfirmTimeSelection}>
+              Confirmer
             </PopoverClose>
           </div>
         </PopoverContent>

@@ -11,14 +11,16 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { cn } from "@/lib/utils";
-import { Dispatch, SetStateAction } from "react";
+import { PopoverClose } from "@radix-ui/react-popover";
+import { useState } from "react";
 
 type Props = {
-  date: Date | undefined;
-  setDate: Dispatch<SetStateAction<Date | undefined>>;
+  initDate: Date | undefined;
+  onConfirm: (dateToSave: Date) => void;
 };
 
-export function DatePicker({ date, setDate }: Props) {
+export function DatePicker({ initDate, onConfirm }: Props) {
+  const [day, setDay] = useState(initDate);
   return (
     <Popover>
       <PopoverTrigger asChild>
@@ -26,20 +28,29 @@ export function DatePicker({ date, setDate }: Props) {
           variant={"outline"}
           className={cn(
             "w-[280px] justify-start text-left font-normal",
-            !date && "text-muted-foreground"
+            !day && "text-muted-foreground"
           )}
         >
           <CalendarIcon className="mr-2 h-4 w-4" />
-          {date ? format(date, "PPP") : <span>Pick a date</span>}
+          {day ? format(day, "PPP") : <span>Pick a date</span>}
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="w-auto p-0">
+      <PopoverContent
+        className="w-auto p-0"
+        onPointerDownOutside={() => setDay(initDate)}
+      >
         <Calendar
           mode="single"
-          selected={date}
-          onSelect={setDate}
+          selected={day}
           initialFocus
+          onSelect={(daySelected) => setDay(daySelected)}
         />
+        <div className="flex justify-between items-center border h-10 p-2">
+          <PopoverClose onClick={() => setDay(initDate)}>Annuler</PopoverClose>
+          <PopoverClose onClick={() => day && onConfirm(day)}>
+            Confirmer
+          </PopoverClose>
+        </div>
       </PopoverContent>
     </Popover>
   );

@@ -1,9 +1,4 @@
-import {
-  Card,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Sheet, SheetTrigger } from "@/components/ui/sheet";
 import AreaIcon from "@/features/area/AreaIcon";
 import { getAreaName } from "@/features/area/utils";
@@ -38,31 +33,31 @@ export default function TaskItem({ task }: Props) {
                 {name}
                 <TaskPriorityBadge priority={priority} />
               </CardTitle>
-              <CardDescription className="flex gap-2">
-                <div className="flex gap-1">
-                  <CalendarClock size="20px" />
-                  {formatDate(startDate, "p")}
-                </div>
-                {timeDuration && (
-                  <div className="flex gap-1">
-                    <Hourglass size="20px" />
-                    {timeDuration}
-                  </div>
-                )}
-                {taskArea && (
-                  <div className="flex gap-1">
-                    <AreaIcon area={taskArea} size="20px" />
-                    {getAreaName(taskArea)}
-                  </div>
-                )}
-                {project && (
-                  <div className="flex gap-1">
-                    <Folder size="20px" />
-                    {project.name}
-                  </div>
-                )}
-              </CardDescription>
             </CardHeader>
+            <CardContent className="flex gap-3">
+              <div className="flex gap-1">
+                <CalendarClock size="20px" />
+                {formatDate(startDate, "p")}
+              </div>
+              {timeDuration && (
+                <div className="flex gap-1">
+                  <Hourglass size="20px" />
+                  {timeDuration}
+                </div>
+              )}
+              {taskArea && (
+                <div className="flex gap-1">
+                  <AreaIcon area={taskArea} size="20px" />
+                  {getAreaName(taskArea)}
+                </div>
+              )}
+              {project && (
+                <div className="flex gap-1">
+                  <Folder size="20px" />
+                  {project.name}
+                </div>
+              )}
+            </CardContent>
           </Card>
         </SheetTrigger>
         <TaskEditView task={task} />

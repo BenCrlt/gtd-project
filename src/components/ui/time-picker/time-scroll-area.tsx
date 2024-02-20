@@ -37,11 +37,17 @@ export const TimeScrollArea = ({
       if (itemValue > firstElement) {
         _itemsOnViewport.shift();
         _itemsOnViewport.push(itemValue);
-        setValue(_itemsOnViewport[2]);
       } else {
         _itemsOnViewport.pop();
         _itemsOnViewport.unshift(itemValue);
-        setValue(_itemsOnViewport[3]);
+      }
+
+      let newValue = _itemsOnViewport[3];
+      if (
+        newValue !== START_OF_SCROLL_ITEM_VALUE &&
+        newValue !== END_OF_SCROLL_ITEM_VALUE
+      ) {
+        setValue(newValue);
       }
       setItemsOnViewport(_itemsOnViewport);
     },

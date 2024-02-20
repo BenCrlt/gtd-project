@@ -1,12 +1,5 @@
-import { DatePicker } from "@/components/ui/date-picker";
-import {
-  SheetContent,
-  SheetDescription,
-  SheetHeader,
-  SheetTitle,
-} from "@/components/ui/sheet";
-import { TimePicker } from "@/components/ui/time-picker/index";
-import Typography from "@/components/ui/typography";
+import { DateAndTimePicker } from "@/components/ui/date-and-time-picker";
+import { SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import { TasksInRange } from "@/resolvers/task/query";
 import { useState } from "react";
 
@@ -29,22 +22,20 @@ export const TaskEditView = ({ task }: TaskEditViewProps) => {
     <SheetContent className="min-w-max">
       <SheetHeader>
         <SheetTitle>{name}</SheetTitle>
-        <SheetDescription>
-          <Typography>{description}</Typography>
-          <div className="flex gap-2">
-            <div className="flex flex-col gap-1">
-              <Typography>Date de début</Typography>
-              <DatePicker date={startDate} setDate={setStartDate} />
-              <TimePicker initDate={startDate} />
-            </div>
-            <div className="flex flex-col gap-1">
-              <Typography>Date de fin</Typography>
-              <DatePicker date={endDate || undefined} setDate={setEndDate} />
-              <TimePicker initDate={endDate} />
-            </div>
-          </div>
-        </SheetDescription>
+        {description}
       </SheetHeader>
+      <div className="flex gap-2">
+        <DateAndTimePicker
+          title="Date de début"
+          date={startDate}
+          onConfirm={(dateToSave) => setStartDate(dateToSave)}
+        />
+        <DateAndTimePicker
+          title="Date de fin"
+          date={endDate}
+          onConfirm={(dateToSave) => setEndDate(dateToSave)}
+        />
+      </div>
     </SheetContent>
   );
 };

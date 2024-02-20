@@ -1,8 +1,9 @@
-import { TimePicker } from "@/components/ui/time-picker/index";
+import Loader from "@/components/ui/loader";
 import TasksView from "@/features/task/TasksView";
 import { getAuthSession } from "@/lib/auth";
 import { getTasksInRange } from "@/resolvers/task/query";
 import { endOfDay, startOfDay } from "date-fns";
+import { Suspense } from "react";
 
 export default async function Home() {
   const session = await getAuthSession();
@@ -19,8 +20,9 @@ export default async function Home() {
   return (
     <div>
       <div className="flex justify-around w-full">
-        <TasksView tasks={dailyTasks} date={new Date()} />
-        <TimePicker />
+        <Suspense fallback={<Loader />}>
+          <TasksView tasks={dailyTasks} date={new Date()} />
+        </Suspense>
       </div>
     </div>
   );
