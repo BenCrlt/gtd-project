@@ -1,41 +1,85 @@
 import { DateAndTimePicker } from "@/components/ui/date-and-time-picker";
-import { SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
-import { TasksInRange } from "@/resolvers/task/query";
-import { useState } from "react";
-
-export type TaskEditViewProps = {
-  task: TasksInRange[number];
-};
-
-export const TaskEditView = ({ task }: TaskEditViewProps) => {
+import { DialogContent } from "@/components/ui/dialog";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import Typography from "@/components/ui/typography";
+import { Area, Priority } from "@prisma/client";
+import { useContext } from "react";
+import { EditTaskFormContext } from "../TaskEditFormContext";
+export const TaskEditView = () => {
   const {
-    name,
-    description,
-    startDate: startDateInit,
-    endDate: endDateInit,
-  } = task;
-
-  const [startDate, setStartDate] = useState(startDateInit);
-  const [endDate, setEndDate] = useState(endDateInit);
+    taskToSave: { name, description, startDate, endDate },
+    onUpdateField,
+    onResetField,
+  } = useContext(EditTaskFormContext);
 
   return (
-    <SheetContent className="min-w-max">
-      <SheetHeader>
-        <SheetTitle>{name}</SheetTitle>
-        {description}
-      </SheetHeader>
-      <div className="flex gap-2">
-        <DateAndTimePicker
-          title="Date de début"
-          date={startDate}
-          onConfirm={(dateToSave) => setStartDate(dateToSave)}
-        />
-        <DateAndTimePicker
-          title="Date de fin"
-          date={endDate}
-          onConfirm={(dateToSave) => setEndDate(dateToSave)}
-        />
+    <DialogContent className="min-w-max flex flex-col gap-4">
+      <Typography className="mb-8" variant="h1">
+        {name}
+      </Typography>
+      <div>
+        <div className="flex gap-2 items-center">
+          <Typography>Date de début</Typography>
+          <DateAndTimePicker
+            date={startDate}
+            onChange={(dateToSave) => onUpdateField("startDate", dateToSave)}
+            onCancel={() => onResetField("startDate")}
+          />
+        </div>
+        <div className="flex gap-2 items-center">
+          <Typography>Date de fin</Typography>
+          <DateAndTimePicker
+            date={endDate ?? undefined}
+            onChange={(dateToSave) => onUpdateField("endDate", dateToSave)}
+            onCancel={() => onResetField("endDate")}
+          />
+        </div>
+        <div className="flex gap-2 items-center">
+          <Typography>Area</Typography>
+          <Select onValueChange={(e) => onUpdateField("area", e as Area)}>
+            <SelectTrigger className="w-[180px]">
+              <SelectValue placeholder="Area" />
+            </SelectTrigger>
+            <SelectContent>
+              {Object.keys(Area).map((area, index) => (
+                <SelectItem value={area} key={`area-edit-form-select-${index}`}>
+                  {area}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+        <div className="flex gap-2 items-center">
+          <Typography>Priorité</Typography>
+          <Select
+            onValueChange={(e) => onUpdateField("priority", e as Priority)}
+          >
+            <SelectTrigger className="w-[180px]">
+              <SelectValue placeholder="Priorité" />
+            </SelectTrigger>
+            <SelectContent>
+              {Object.keys(Priority).map((priority, index) => (
+                <SelectItem
+                  value={priority}
+                  key={`priority-edit-form-select-${index}`}
+                >
+                  {priority}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
       </div>
-    </SheetContent>
+      <div className="flex flex-col">
+        <Typography variant="h2">Description</Typography>
+        <Typography>{description}</Typography>
+      </div>
+    </DialogContent>
   );
 };

@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Dispatch, SetStateAction, useCallback, useState } from "react";
+import { useCallback, useState } from "react";
 import { ScrollArea } from "../scroll-area";
 import { TimeScrollAreaItem } from "./time-scroll-area-item";
 
@@ -10,16 +10,18 @@ const END_OF_SCROLL_ITEM_VALUE = 100;
 
 export type TimeScrollAreaProps = {
   selectorValues: string[];
-  setValue: Dispatch<SetStateAction<number>>;
+  onChange: (value: number) => void;
 };
 
 export const TimeScrollArea = ({
   selectorValues,
-  setValue,
+  onChange,
 }: TimeScrollAreaProps) => {
   const [itemsOnViewport, setItemsOnViewport] = useState<number[]>([
     -1, -1, -1, -1, -1, -1, -1,
   ]);
+
+  console.log(itemsOnViewport);
 
   const onViewportEnter = useCallback(
     (itemValue: number) => {
@@ -47,11 +49,11 @@ export const TimeScrollArea = ({
         newValue !== START_OF_SCROLL_ITEM_VALUE &&
         newValue !== END_OF_SCROLL_ITEM_VALUE
       ) {
-        setValue(newValue);
+        onChange(newValue);
       }
       setItemsOnViewport(_itemsOnViewport);
     },
-    [itemsOnViewport, setValue]
+    [itemsOnViewport, onChange]
   );
 
   const onClickItem = useCallback(
@@ -77,9 +79,9 @@ export const TimeScrollArea = ({
         }
       );
       setItemsOnViewport(_itemsOnViewportWithoutInvalidValue);
-      setValue(itemValue);
+      onChange(itemValue);
     },
-    [selectorValues, setValue]
+    [selectorValues, onChange]
   );
 
   return (
@@ -87,7 +89,7 @@ export const TimeScrollArea = ({
       {Array.from({ length: 3 }).map((_, index) => (
         <motion.div
           key={index}
-          className="h-8"
+          className="h-8 border-solid border-2"
           onViewportEnter={() => onViewportEnter(START_OF_SCROLL_ITEM_VALUE)}
         ></motion.div>
       ))}
