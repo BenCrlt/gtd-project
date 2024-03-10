@@ -26,7 +26,7 @@ export default function TaskItem({ task }: Props) {
   );
 
   return (
-    <motion.div whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.9 }}>
+    <motion.div whileHover={{ scale: 1.1 }} whileTap={{ scale: 1 }}>
       <DialogTrigger className="w-full">
         <Card className="w-full" onClick={() => onSelect(task)}>
           <CardHeader>
