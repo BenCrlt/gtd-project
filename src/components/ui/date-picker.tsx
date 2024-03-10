@@ -9,26 +9,24 @@ type Props = {
 
 export function DatePicker({ date, onChange }: Props) {
   return (
-    <div>
-      <Calendar
-        mode="single"
-        selected={date}
-        initialFocus
-        onSelect={(daySelected) => {
-          if (!date || !daySelected) {
-            return;
-          }
-          onChange(
-            new Date(
-              daySelected.getFullYear(),
-              daySelected.getMonth(),
-              daySelected.getDay(),
-              date.getHours(),
-              date.getMinutes()
-            )
-          );
-        }}
-      />
-    </div>
+    <Calendar
+      mode="single"
+      selected={date}
+      initialFocus
+      onSelect={(daySelected) => {
+        if (!date || !daySelected) {
+          return;
+        }
+        onChange(
+          new Date(
+            daySelected.getFullYear(),
+            daySelected.getMonth(),
+            daySelected.getDate(),
+            date.getHours(),
+            date.getMinutes()
+          )
+        );
+      }}
+    />
   );
 }

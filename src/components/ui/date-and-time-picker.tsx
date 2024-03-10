@@ -12,9 +12,16 @@ export type Props = {
   date: Date | undefined;
   onChange: (dateToSave: Date) => void;
   onCancel: () => void;
+  withTime?: boolean;
 };
 
-export const DateAndTimePicker = ({ date, onChange, onCancel }: Props) => {
+export const DateAndTimePicker = ({
+  date,
+  onChange,
+  onCancel,
+  withTime,
+}: Props) => {
+  const dateFormat = withTime ? "PPP p" : "PPP";
   return (
     <Popover modal={true}>
       <PopoverTrigger asChild>
@@ -26,7 +33,7 @@ export const DateAndTimePicker = ({ date, onChange, onCancel }: Props) => {
           )}
         >
           <CalendarIcon className="mr-2 h-4 w-4" />
-          {date ? format(date, "PPP p") : <span>Pick a date</span>}
+          {date ? format(date, dateFormat) : <span>Pick a date</span>}
         </Button>
       </PopoverTrigger>
       <PopoverContent
@@ -34,7 +41,7 @@ export const DateAndTimePicker = ({ date, onChange, onCancel }: Props) => {
         onPointerDownOutside={onCancel}
       >
         <DatePicker date={date} onChange={onChange} />
-        <TimePicker date={date} onChange={onChange} />
+        {withTime && <TimePicker date={date} onChange={onChange} />}
         <div className="flex justify-between items-center border h-10 p-2">
           <PopoverClose onClick={onCancel}>Annuler</PopoverClose>
           <PopoverClose>Confirmer</PopoverClose>
