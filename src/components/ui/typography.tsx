@@ -15,11 +15,7 @@ export default function Typography({
 }: PropsWithChildren<TypographyProps>) {
   switch (variant) {
     case "p":
-      return (
-        <p className={clsx("leading-7 [&:not(:first-child)]:mt-6", className)}>
-          {children}
-        </p>
-      );
+      return <p className={clsx("leading-7", className)}>{children}</p>;
     case "h1":
       return (
         <h1
