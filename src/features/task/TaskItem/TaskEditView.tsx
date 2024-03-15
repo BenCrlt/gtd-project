@@ -4,6 +4,7 @@ import {
   DialogContent,
   DialogFooter,
 } from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
 import {
   Select,
   SelectContent,
@@ -18,16 +19,32 @@ import { useContext } from "react";
 import { EditTaskFormContext } from "../TaskEditFormContext";
 export const TaskEditView = () => {
   const {
-    taskToSave: { name, description, startDate, endDate, priority, area },
+    taskToSave,
+    onSubmit,
     onUpdateField,
     onResetField,
+    editName,
+    setEditName,
   } = useContext(EditTaskFormContext);
+
+  const { name, description, priority, area, startDate, endDate } = taskToSave;
 
   return (
     <DialogContent className="min-w-max flex flex-col gap-4 m-2">
-      <Typography className="py-4 pr-2" variant="h1">
-        {name}
-      </Typography>
+      {editName ? (
+        <Input
+          type="text"
+          value={name}
+          onChange={(e) => onUpdateField("name", e.currentTarget.value)}
+          className="text-4xl"
+        />
+      ) : (
+        <div onClick={() => setEditName(true)}>
+          <Typography className="py-4 pr-2" variant="h1">
+            {name}
+          </Typography>
+        </div>
+      )}
       <div className="grid grid-cols-2 items-center gap-2">
         <Typography>Date de début</Typography>
         <DateAndTimePicker
@@ -87,7 +104,7 @@ export const TaskEditView = () => {
       </div>
       <DialogFooter className="flex gap-2">
         <DialogClose className="opacity-50">Annuler</DialogClose>
-        <DialogClose>Confirmer</DialogClose>
+        <DialogClose onClick={onSubmit}>Confirmer</DialogClose>
       </DialogFooter>
     </DialogContent>
   );

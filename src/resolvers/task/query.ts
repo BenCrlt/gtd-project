@@ -25,9 +25,6 @@ export const getTasksInRange = async (
         },
       ],
     },
-    include: {
-      project: true,
-    },
     orderBy: [
       {
         priority: "desc",

@@ -1,34 +1,45 @@
+import { saveTask } from "@/resolvers/task/mutation";
 import { TasksInRange } from "@/resolvers/task/query";
-import { Priority } from "@prisma/client";
-import { PropsWithChildren, createContext, useState } from "react";
+import { Priority, Task } from "@prisma/client";
+import {
+  Dispatch,
+  PropsWithChildren,
+  SetStateAction,
+  createContext,
+  useState,
+} from "react";
 
 export type EditTaskFormContextType = {
-  taskToSave: TaskInEditingMode;
+  taskToSave: TaskFormProps;
   onSelect: (task: TasksInRange[number]) => void;
-  onUpdateField: <
-    T extends TaskInEditingMode,
-    K extends keyof T,
-    V extends T[K]
-  >(
+  onSubmit: () => void;
+  onUpdateField: <T extends TaskFormProps, K extends keyof T, V extends T[K]>(
     key: K,
     value: V
   ) => void;
-  onResetField: <T extends TaskInEditingMode, K extends keyof T>(
-    key: K
-  ) => void;
+  onResetField: <T extends TaskFormProps, K extends keyof T>(key: K) => void;
+  editName: boolean;
+  setEditName: Dispatch<SetStateAction<boolean>>;
+};
+
+const defaultTask: TaskFormProps = {
+  id: undefined,
+  name: "",
+  description: "",
+  area: null,
+  startDate: new Date(),
+  endDate: null,
+  isDone: false,
+  priority: Priority.LOW,
+  userId: "",
 };
 
 const EditTaskFormContext = createContext<EditTaskFormContextType>({
-  taskToSave: {
-    name: "",
-    description: "",
-    area: null,
-    startDate: new Date(),
-    endDate: null,
-    isDone: false,
-    priority: Priority.LOW,
-  },
+  taskToSave: defaultTask,
   onSelect: () => {
+    return;
+  },
+  onSubmit: () => {
     return;
   },
   onUpdateField: () => {
@@ -37,10 +48,12 @@ const EditTaskFormContext = createContext<EditTaskFormContextType>({
   onResetField: () => {
     return;
   },
+  editName: false,
+  setEditName: () => false,
 });
 
-type TaskInEditingMode = Pick<
-  TasksInRange[number],
+export type TaskFormProps = Pick<
+  Task,
   | "name"
   | "description"
   | "area"
@@ -48,24 +61,24 @@ type TaskInEditingMode = Pick<
   | "endDate"
   | "isDone"
   | "priority"
->;
+  | "userId"
+> & { id: string | undefined };
 
 const EditTaskFormProvider = ({ children }: PropsWithChildren) => {
-  const [taskToSave, setTaskToSave] = useState<TaskInEditingMode>({
-    name: "",
-    description: "",
-    area: null,
-    startDate: new Date(),
-    endDate: null,
-    isDone: false,
-    priority: Priority.LOW,
-  });
+  const [taskToSave, setTaskToSave] = useState<TaskFormProps>(defaultTask);
   const [taskBeforeEditing, setTaskBeforeEditing] =
-    useState<TaskInEditingMode>(taskToSave);
+    useState<TaskFormProps>(taskToSave);
+
+  const [editName, setEditName] = useState<boolean>(false);
 
   const onSelect = (task: TasksInRange[number]) => {
     setTaskBeforeEditing(task);
     setTaskToSave(task);
+  };
+
+  const onSubmit = (): void => {
+    setEditName(false);
+    void saveTask(taskToSave);
   };
 
   return (
@@ -73,13 +86,16 @@ const EditTaskFormProvider = ({ children }: PropsWithChildren) => {
       value={{
         taskToSave,
         onSelect,
+        onSubmit,
         onUpdateField: (key, value) =>
           setTaskToSave((prev) => ({ ...prev, [key]: value })),
         onResetField: (key) =>
           setTaskToSave((prev) => ({
             ...prev,
-            [key]: taskBeforeEditing[key as keyof TaskInEditingMode],
+            [key]: taskBeforeEditing[key as keyof TaskFormProps],
           })),
+        editName,
+        setEditName,
       }}
     >
       {children}
