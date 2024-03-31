@@ -1,7 +1,7 @@
 "use server";
 import Loader from "@/components/ui/loader";
 import { getAuthSession } from "@/lib/auth";
-import { getTasksInRange } from "@/resolvers/task/query";
+import { getTasksInRange, StatusTask } from "@/resolvers/task/query";
 import { endOfDay, startOfDay } from "date-fns";
 import { Suspense } from "react";
 import UserPlanning from "./userPlanning/page";
@@ -13,15 +13,28 @@ export default async function Home() {
     return <></>;
   }
 
-  const dailyTasks = await getTasksInRange(session.user.id, {
-    start: startOfDay(new Date()),
-    end: endOfDay(new Date()),
-  });
+  const todoTasks = await getTasksInRange(
+    session.user.id,
+    {
+      start: startOfDay(new Date()),
+      end: endOfDay(new Date()),
+    },
+    StatusTask.ONLY_TODO
+  );
+
+  const doneTasks = await getTasksInRange(
+    session.user.id,
+    {
+      start: startOfDay(new Date()),
+      end: endOfDay(new Date()),
+    },
+    StatusTask.ONLY_DONE
+  );
 
   return (
     <div>
       <Suspense fallback={<Loader />}>
-        <UserPlanning tasks={dailyTasks} />
+        <UserPlanning todoTasks={todoTasks} doneTasks={doneTasks} />
       </Suspense>
     </div>
   );

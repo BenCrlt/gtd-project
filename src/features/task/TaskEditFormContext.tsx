@@ -1,4 +1,4 @@
-import { saveTask } from "@/resolvers/task/mutation";
+import { saveTask, updateTaskStatus } from "@/resolvers/task/mutation";
 import { TasksInRange } from "@/resolvers/task/query";
 import { Priority, Task } from "@prisma/client";
 import { useSession } from "next-auth/react";
@@ -20,6 +20,7 @@ export type EditTaskFormContextType = {
     value: V
   ) => void;
   onResetField: <T extends TaskFormProps, K extends keyof T>(key: K) => void;
+  onUpdateTaskStatus: (taskId: string, isDone: boolean) => Promise<void>;
   editName: boolean;
   setEditName: Dispatch<SetStateAction<boolean>>;
   loading: boolean;
@@ -46,15 +47,15 @@ const EditTaskFormContext = createContext<EditTaskFormContextType>({
   onCreate: () => {
     return;
   },
-  onSubmit: async () => {
-    return new Promise((res) => res());
-  },
+  onSubmit: async () => new Promise((res) => res()),
   onUpdateField: () => {
     return;
   },
   onResetField: () => {
     return;
   },
+  onUpdateTaskStatus: async (taskId: string, isDone: boolean) =>
+    new Promise((res) => res()),
   editName: false,
   setEditName: () => false,
   loading: false,
@@ -84,6 +85,7 @@ const EditTaskFormProvider = ({ children }: PropsWithChildren) => {
   const [editName, setEditName] = useState<boolean>(false);
 
   const onEdit = (task: TasksInRange[number]) => {
+    setOpen(true);
     setTaskBeforeEditing(task);
     setTaskToSave(task);
   };
@@ -114,6 +116,18 @@ const EditTaskFormProvider = ({ children }: PropsWithChildren) => {
     setOpen(false);
   };
 
+  const onUpdateTaskStatus = async (
+    taskId: string,
+    isDone: boolean
+  ): Promise<void> => {
+    try {
+      await updateTaskStatus(taskId, isDone);
+    } catch (e) {
+      setLoading(false);
+      if (e instanceof Error) throw new Error(e.message);
+    }
+  };
+
   return (
     <EditTaskFormContext.Provider
       value={{
@@ -133,6 +147,7 @@ const EditTaskFormProvider = ({ children }: PropsWithChildren) => {
         loading,
         open,
         setOpen,
+        onUpdateTaskStatus,
       }}
     >
       {children}

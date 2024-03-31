@@ -1,4 +1,5 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Checkbox } from "@/components/ui/checkbox";
 import AreaIcon from "@/features/area/AreaIcon";
 import { getAreaName } from "@/features/area/utils";
 import { getTimeDifferenceString } from "@/lib/date";
@@ -14,8 +15,8 @@ interface Props {
   task: TasksInRange[number];
 }
 export default function TaskItem({ task }: Props) {
-  const { onEdit } = useContext(EditTaskFormContext);
-  const { startDate, endDate, name, priority, area } = task;
+  const { onEdit, onUpdateTaskStatus } = useContext(EditTaskFormContext);
+  const { startDate, endDate, name, priority, area, isDone, id } = task;
 
   const taskArea = area;
 
@@ -36,19 +37,29 @@ export default function TaskItem({ task }: Props) {
             <TaskPriorityBadge priority={priority} />
           </CardTitle>
         </CardHeader>
-        <CardContent className="flex gap-3">
-          {timeDuration && (
-            <div className="flex gap-1">
-              <Hourglass size="20px" />
-              {timeDuration}
-            </div>
-          )}
-          {taskArea && (
-            <div className="flex gap-1">
-              <AreaIcon area={taskArea} size="20px" />
-              {getAreaName(taskArea)}
-            </div>
-          )}
+        <CardContent className="flex place-content-between">
+          <div className="flex gap-3">
+            {timeDuration && (
+              <div className="flex gap-1">
+                <Hourglass size="20px" />
+                {timeDuration}
+              </div>
+            )}
+            {taskArea && (
+              <div className="flex gap-1">
+                <AreaIcon area={taskArea} size="20px" />
+                {getAreaName(taskArea)}
+              </div>
+            )}
+          </div>
+          <Checkbox
+            checked={isDone}
+            onClick={(e) => {
+              onUpdateTaskStatus(id, !isDone);
+              e.stopPropagation();
+            }}
+            className="size-6 rounded-full"
+          />
         </CardContent>
       </Card>
     </motion.div>

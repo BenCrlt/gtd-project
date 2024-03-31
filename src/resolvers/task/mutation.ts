@@ -39,3 +39,14 @@ export const saveTask = async (taskToSave: TaskFormProps) => {
   revalidatePath("/");
   return taskUpdated;
 };
+
+export const updateTaskStatus = async (taskId: string, isDone: boolean) => {
+  return prisma.task
+    .update({
+      where: { id: taskId },
+      data: {
+        isDone,
+      },
+    })
+    .then(() => revalidatePath("/"));
+};
