@@ -106,6 +106,7 @@ export const TaskEditView = () => {
           value={description}
           placeholder="Renseigner une description"
           onChange={(e) => onUpdateField("description", e.currentTarget.value)}
+          className="h-48"
         />
       </div>
       <DialogFooter className="flex gap-2">

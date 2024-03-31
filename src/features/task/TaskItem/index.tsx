@@ -37,8 +37,8 @@ export default function TaskItem({ task }: Props) {
             <TaskPriorityBadge priority={priority} />
           </CardTitle>
         </CardHeader>
-        <CardContent className="flex place-content-between">
-          <div className="flex gap-3">
+        <CardContent className="flex place-content-between px-6 py-2">
+          <div className="flex gap-3 items-center">
             {timeDuration && (
               <div className="flex gap-1">
                 <Hourglass size="20px" />
@@ -52,14 +52,15 @@ export default function TaskItem({ task }: Props) {
               </div>
             )}
           </div>
-          <Checkbox
-            checked={isDone}
+          <div
+            className="flex size-10 border-s-violet-50 justify-center items-center"
             onClick={(e) => {
               onUpdateTaskStatus(id, !isDone);
               e.stopPropagation();
             }}
-            className="size-6 rounded-full"
-          />
+          >
+            <Checkbox checked={isDone} className="size-6 rounded-full" />
+          </div>
         </CardContent>
       </Card>
     </motion.div>
