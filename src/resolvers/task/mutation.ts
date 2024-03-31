@@ -3,19 +3,24 @@
 import { TaskFormProps } from "@/features/task/TaskEditFormContext";
 import { prisma } from "@/lib/prisma";
 import { omit } from "lodash";
+import { revalidatePath } from "next/cache";
 
 export const saveTask = async (taskToSave: TaskFormProps) => {
   if (!taskToSave.id) {
-    return prisma.task.create({
+    const taskCreated = prisma.task.create({
       data: {
         ...taskToSave,
       },
     });
+    revalidatePath("/");
+    return taskCreated;
   }
-  return prisma.task.update({
+  const taskUpdated = await prisma.task.update({
     where: { id: taskToSave.id },
     data: {
       ...omit(taskToSave, ["userId"]),
     },
   });
+  revalidatePath("/");
+  return taskUpdated;
 };

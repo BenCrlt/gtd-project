@@ -1,3 +1,4 @@
+import { Button } from "@/components/ui/button";
 import { DateAndTimePicker } from "@/components/ui/date-and-time-picker";
 import {
   DialogClose,
@@ -5,6 +6,7 @@ import {
   DialogFooter,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
+import Loader from "@/components/ui/loader";
 import {
   Select,
   SelectContent,
@@ -25,6 +27,7 @@ export const TaskEditView = () => {
     onResetField,
     editName,
     setEditName,
+    loading,
   } = useContext(EditTaskFormContext);
 
   const { name, description, priority, area, startDate, endDate } = taskToSave;
@@ -37,6 +40,9 @@ export const TaskEditView = () => {
           value={name}
           onChange={(e) => onUpdateField("name", e.currentTarget.value)}
           className="text-4xl"
+          onBlur={() => setEditName(false)}
+          autoFocus
+          onKeyDown={(e) => e.key === "Enter" && setEditName(false)}
         />
       ) : (
         <div onClick={() => setEditName(true)}>
@@ -103,8 +109,10 @@ export const TaskEditView = () => {
         />
       </div>
       <DialogFooter className="flex gap-2">
-        <DialogClose className="opacity-50">Annuler</DialogClose>
-        <DialogClose onClick={onSubmit}>Confirmer</DialogClose>
+        <DialogClose disabled={loading}>Annuler</DialogClose>
+        <Button onClick={onSubmit} disabled={loading}>
+          {loading ? <Loader /> : "Confirmer"}
+        </Button>
       </DialogFooter>
     </DialogContent>
   );

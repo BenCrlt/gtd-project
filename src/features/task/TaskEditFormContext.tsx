@@ -12,7 +12,7 @@ import {
 export type EditTaskFormContextType = {
   taskToSave: TaskFormProps;
   onSelect: (task: TasksInRange[number]) => void;
-  onSubmit: () => void;
+  onSubmit: () => Promise<void>;
   onUpdateField: <T extends TaskFormProps, K extends keyof T, V extends T[K]>(
     key: K,
     value: V
@@ -20,6 +20,9 @@ export type EditTaskFormContextType = {
   onResetField: <T extends TaskFormProps, K extends keyof T>(key: K) => void;
   editName: boolean;
   setEditName: Dispatch<SetStateAction<boolean>>;
+  loading: boolean;
+  open: boolean;
+  setOpen: Dispatch<SetStateAction<boolean>>;
 };
 
 const defaultTask: TaskFormProps = {
@@ -29,7 +32,6 @@ const defaultTask: TaskFormProps = {
   area: null,
   startDate: new Date(),
   endDate: null,
-  isDone: false,
   priority: Priority.LOW,
   userId: "",
 };
@@ -39,8 +41,8 @@ const EditTaskFormContext = createContext<EditTaskFormContextType>({
   onSelect: () => {
     return;
   },
-  onSubmit: () => {
-    return;
+  onSubmit: async () => {
+    return new Promise((res) => res());
   },
   onUpdateField: () => {
     return;
@@ -50,6 +52,9 @@ const EditTaskFormContext = createContext<EditTaskFormContextType>({
   },
   editName: false,
   setEditName: () => false,
+  loading: false,
+  open: false,
+  setOpen: () => false,
 });
 
 export type TaskFormProps = Pick<
@@ -59,13 +64,14 @@ export type TaskFormProps = Pick<
   | "area"
   | "startDate"
   | "endDate"
-  | "isDone"
   | "priority"
   | "userId"
-> & { id: string | undefined };
+> & { id?: string };
 
 const EditTaskFormProvider = ({ children }: PropsWithChildren) => {
   const [taskToSave, setTaskToSave] = useState<TaskFormProps>(defaultTask);
+  const [loading, setLoading] = useState(false);
+  const [open, setOpen] = useState(false);
   const [taskBeforeEditing, setTaskBeforeEditing] =
     useState<TaskFormProps>(taskToSave);
 
@@ -76,9 +82,12 @@ const EditTaskFormProvider = ({ children }: PropsWithChildren) => {
     setTaskToSave(task);
   };
 
-  const onSubmit = (): void => {
+  const onSubmit = async (): Promise<void> => {
+    setLoading(true);
     setEditName(false);
-    void saveTask(taskToSave);
+    await saveTask(taskToSave);
+    setLoading(false);
+    setOpen(false);
   };
 
   return (
@@ -96,6 +105,9 @@ const EditTaskFormProvider = ({ children }: PropsWithChildren) => {
           })),
         editName,
         setEditName,
+        loading,
+        open,
+        setOpen,
       }}
     >
       {children}
