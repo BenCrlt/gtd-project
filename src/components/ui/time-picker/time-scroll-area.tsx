@@ -21,8 +21,6 @@ export const TimeScrollArea = ({
     -1, -1, -1, -1, -1, -1, -1,
   ]);
 
-  console.log(itemsOnViewport);
-
   const onViewportEnter = useCallback(
     (itemValue: number) => {
       const _itemsOnViewport = itemsOnViewport;

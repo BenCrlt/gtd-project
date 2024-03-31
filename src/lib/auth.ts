@@ -26,6 +26,7 @@ export const authOptions: AuthOptions = {
     session({ session, token }: any) {
       session.accessToken = token.accessToken;
       session.id = token.sub;
+      session.user.providerAccountId = token.id;
       return session;
     },
     redirect({ baseUrl }) {

@@ -7,9 +7,24 @@ import { revalidatePath } from "next/cache";
 
 export const saveTask = async (taskToSave: TaskFormProps) => {
   if (!taskToSave.id) {
+    const user = await prisma.user.findFirstOrThrow({
+      where: {
+        accounts: {
+          some: {
+            providerAccountId: taskToSave.userId,
+          },
+        },
+      },
+    });
     const taskCreated = prisma.task.create({
       data: {
-        ...taskToSave,
+        ...omit(taskToSave, "userId"),
+        endDate: taskToSave.endDate ?? taskToSave.startDate,
+        user: {
+          connect: {
+            id: user.id,
+          },
+        },
       },
     });
     revalidatePath("/");

@@ -1,9 +1,10 @@
+"use server";
 import Loader from "@/components/ui/loader";
-import TasksView from "@/features/task/TasksView";
 import { getAuthSession } from "@/lib/auth";
 import { getTasksInRange } from "@/resolvers/task/query";
 import { endOfDay, startOfDay } from "date-fns";
 import { Suspense } from "react";
+import UserPlanning from "./userPlanning/page";
 
 export default async function Home() {
   const session = await getAuthSession();
@@ -19,11 +20,9 @@ export default async function Home() {
 
   return (
     <div>
-      <div className="flex justify-around w-full">
-        <Suspense fallback={<Loader />}>
-          <TasksView tasks={dailyTasks} date={new Date()} />
-        </Suspense>
-      </div>
+      <Suspense fallback={<Loader />}>
+        <UserPlanning tasks={dailyTasks} />
+      </Suspense>
     </div>
   );
 }
